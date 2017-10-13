@@ -1,10 +1,27 @@
 ﻿var CheatModKristof1104 = {};
 (function () {
-	var new_date = 0;
-	var perfectScores = false;
-	var noBugsMode = false;
-	var fastResearch = false;
-	var showAllHints = false;
+	var settings = {
+		new_date: 0,
+		perfectScores: false,
+		noBugsMode: false,
+		fastResearch: false,
+		showAllHints: false
+	};
+	
+	GDT.on(GDT.eventKeys.saves.loaded, function() {
+		var dataStore = GDT.getDataStore("CheatModKristof1104");
+	
+		if (dataStore.data) {
+			var saved = dataStore.data;
+			if (saved.new_date) settings.new_date = saved.new_date;
+			if (saved.perfectScores) settings.perfectScores = saved.perfectScores;
+			if (saved.noBugsMode) settings.noBugsMode = saved.noBugsMode;
+			if (saved.fastResearch) settings.fastResearch = saved.fastResearch;
+			if (saved.showAllHints) settings.showAllHints = saved.showAllHints;
+		}
+		
+		dataStore.data = settings;
+	});
 	
 	var oldSetupNewGame = GameManager._setupNewGame;
 	var newSetupNewGame = function(){
@@ -411,13 +428,13 @@
 	}
 	
 	function moveToDate(){
-		GameManager.gameTime = new_date * (GameManager.SECONDS_PER_WEEK * 1E3);
+		GameManager.gameTime = settings.new_date * (GameManager.SECONDS_PER_WEEK * 1E3);
 		//GameManager.company.currentWeek = GameManager.gameTime;
-		General.proceedOneWeek(GameManager.company,new_date);
+		General.proceedOneWeek(GameManager.company, settings.new_date);
 	}	
 	
 	function setDate(d){
-		new_date = d
+		settings.new_date = d
 		
 		 var a = Math.floor(d) % 4 + 1;
 		 var c = Math.floor(d) / 4;
@@ -514,41 +531,41 @@
 	};
 	
 	var setPerfectScoreEnabled = function(){
-		if(perfectScores){
+		if(settings.perfectScores){
 			GDT.off(GDT.eventKeys.gameplay.afterGameReview, setPerfectScores);
 			var div = $("#CheatContainer");
 			div.find("#setPerfectScoreEnabled").html("Activate Always have PerfectScores");
-			perfectScores = false;
+			settings.perfectScores = false;
 		}else{
 			GDT.on(GDT.eventKeys.gameplay.afterGameReview, setPerfectScores);
 			var div = $("#CheatContainer");
 			div.find("#setPerfectScoreEnabled").html("Deactivate Always have PerfectScores");
-			perfectScores = true;
+			settings.perfectScores = true;
 		}
 	}
 	
 	//remove bugs
 	var old_updateCharacters = GameManager.updateCharacters;
 	var new_updateCharacters = function(){
-		if(noBugsMode && typeof GameManager.company.currentGame != 'undefined' && GameManager.company.currentGame != null){
+		if(settings.noBugsMode && typeof GameManager.company.currentGame != 'undefined' && GameManager.company.currentGame != null){
 			GameManager.company.currentGame.bugs = 0;
 		}
 		old_updateCharacters();
-		if(noBugsMode && typeof GameManager.company.currentGame != 'undefined' && GameManager.company.currentGame != null){
+		if(settings.noBugsMode && typeof GameManager.company.currentGame != 'undefined' && GameManager.company.currentGame != null){
 			GameManager.company.currentGame.bugs = 0;
 		}
 	}
 	GameManager.updateCharacters = new_updateCharacters
 	
 	var setNoBugsModeEnabled = function(){
-		if(noBugsMode){
+		if(settings.noBugsMode){
 			var div = $("#CheatContainer");
 			div.find("#setNoBugsModeEnabled").html("Activate No Bugs Mode");
-			noBugsMode = false;
+			settings.noBugsMode = false;
 		}else{
 			var div = $("#CheatContainer");
 			div.find("#setNoBugsModeEnabled").html("Deactivate No Bugs Mode");
-			noBugsMode = true;
+			settings.noBugsMode = true;
 		}
 	}
 	
@@ -558,7 +575,7 @@
 		if(typeof researcher.currentResearch != 'undefined' && researcher.currentResearch != null && researcher.currentResearch.type == "training"){
 			old_increaseResearchProgress(researcher, progress);
 		}else{
-			if(fastResearch){
+			if(settings.fastResearch){
 				var researchTemp = GameManager.currentResearches.first(function (c) {
 					return c.staffId === researcher.id
 				});
@@ -574,14 +591,14 @@
 	GameManager.increaseResearchProgress = new_increaseResearchProgress
 
 	var setFastResearchEnabled = function(){
-		if(fastResearch){
+		if(settings.fastResearch){
 			var div = $("#CheatContainer");
 			div.find("#setFastResearchModeEnabled").html("Activate Fast Research Mode");
-			fastResearch = false;
+			settings.fastResearch = false;
 		}else{
 			var div = $("#CheatContainer");
 			div.find("#setFastResearchModeEnabled").html("Deactivate Fast Research Mode");
-			fastResearch = true;
+			settings.fastResearch = true;
 		}
 	}
 	
@@ -781,7 +798,7 @@
 	//knowledge
 	var old_hasComboKnowledge = Knowledge.hasComboKnowledge;
 	var new_hasComboKnowledge = function(company, game, source){
-		if(showAllHints){
+		if(settings.showAllHints){
 			return true;
 		}else{
 			return old_hasComboKnowledge(company, game, source);
@@ -791,7 +808,7 @@
 	
 	var old_hasTrainingKnowledge = Knowledge.hasTrainingKnowledge;
 	var new_hasTrainingKnowledge = function(training){
-		if(showAllHints){
+		if(settings.showAllHints){
 			return true;
 		}else{
 			return old_hasTrainingKnowledge(training);
@@ -801,7 +818,7 @@
 	
 	var old_hasMissionWeightingKnowledge = Knowledge.hasMissionWeightingKnowledge;
 	var new_hasMissionWeightingKnowledge = function(company, mission, game, ignoreTopic, source){
-		if(showAllHints){
+		if(settings.showAllHints){
 			return true;
 		}else{
 			return old_hasMissionWeightingKnowledge(company, mission, game, ignoreTopic, source);
@@ -811,7 +828,7 @@
 
 	var old_getPlatformGenreWeightingKnowledge = Knowledge.getPlatformGenreWeightingKnowledge;
 	var new_getPlatformGenreWeightingKnowledge = function(company, platform){
-		if(showAllHints){
+		if(settings.showAllHints){
 			var match = {id : platform.id};
 			match["genreWeightings"] = [0, 0, 0, 0, 0, 0];
 			match["genreWeightings"] = platform.genreWeightings
@@ -824,7 +841,7 @@
 	
 	var old_getPlatformAudienceWeightingKnowledge = Knowledge.getPlatformAudienceWeightingKnowledge;
 	var new_getPlatformAudienceWeightingKnowledge = function(company, platform){
-		if(showAllHints){
+		if(settings.showAllHints){
 			var match = {id : platform.id};
 			match["audienceWeightings"] = [0, 0, 0];
 			var weighting1 = Platforms.getAudienceWeighting([platform], "young", true);
@@ -844,7 +861,7 @@
 
 	var old_getTopicAudienceWeightingKnowledge = Knowledge.getTopicAudienceWeightingKnowledge;
 	var new_getTopicAudienceWeightingKnowledge = function(company, topic, audience, target){
-		if(showAllHints){
+		if(settings.showAllHints){
 			var match = {id : topic.id};
 			match["audienceWeightings"] =[0, 0, 0];
 			var weighting1 = General.getAudienceWeighting(topic.audienceWeightings, "young");
@@ -866,7 +883,7 @@
 	var new_updateFeatureFocusPreview = function() {
 		old_updateFeatureFocusPreview();
 		
-		if (showAllHints) {
+		if (settings.showAllHints) {
 			var percentages = UI._getSelectedFeaturePercentages();
 			$("#simplemodal-container #selectFeatureMenuTemplate .featureDurationPreview")
 				.each(function(i, e) {
@@ -877,14 +894,14 @@
 	UI._updateFeatureFocusPreview = new_updateFeatureFocusPreview;
 	
 	var setShowAllHintsEnabled = function(){
-		if(showAllHints){
+		if(settings.showAllHints){
 			var div = $("#CheatContainer");
 			div.find("#showAllHintsEnabled").html("Activate show all hints Mode");
-			showAllHints = false;
+			settings.showAllHints = false;
 		}else{
 			var div = $("#CheatContainer");
 			div.find("#showAllHintsEnabled").html("Deactivate show all hints Mode");
-			showAllHints = true;
+			settings.showAllHints = true;
 		}
 	}
 	
