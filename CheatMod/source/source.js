@@ -862,7 +862,20 @@
 	}
 	Knowledge.getTopicAudienceWeightingKnowledge = new_getTopicAudienceWeightingKnowledge;
 	
-
+	var old_updateFeatureFocusPreview = UI._updateFeatureFocusPreview;
+	var new_updateFeatureFocusPreview = function() {
+		old_updateFeatureFocusPreview();
+		
+		if (showAllHints) {
+			var percentages = UI._getSelectedFeaturePercentages();
+			$("#simplemodal-container #selectFeatureMenuTemplate .featureDurationPreview")
+				.each(function(i, e) {
+					e.textContent = Math.round(percentages[i]) + "%";
+				});			
+		}
+	}
+	UI._updateFeatureFocusPreview = new_updateFeatureFocusPreview;
+	
 	var setShowAllHintsEnabled = function(){
 		if(showAllHints){
 			var div = $("#CheatContainer");

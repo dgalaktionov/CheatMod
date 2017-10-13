@@ -1,6 +1,10 @@
 ﻿(function () {
 	var ready = function () {
-		
+		$("<link/>", {
+		   rel: "stylesheet",
+		   type: "text/css",
+		   href: "mods/CheatMod/source/styles.css"
+		}).appendTo("head");
 	};
 
 	var error = function () {
