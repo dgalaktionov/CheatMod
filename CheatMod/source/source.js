@@ -477,8 +477,8 @@
 				}, 2000);
 				
 				//set current cash & fans textFields
-				div.find("#moneyField").val(UI.getLongNumberString(GameManager.company.cash));
-				div.find("#fansField").val(UI.getLongNumberString(GameManager.company.fans));
+				div.find("#moneyField").val(Math.floor(GameManager.company.cash));
+				div.find("#fansField").val(Math.floor(GameManager.company.fans));
 				
 				//test slider
 				div.find(".volumeSlider").slider({
