@@ -439,8 +439,6 @@
 					label: "CheatMode...",
 					action: function () {
 						Sound.click();
-						GameManager.resume(true);
-						
 						generateTechLevelScreen();	
 						var div = $("#CheatContainer");
 						div.scrollTop()
@@ -451,6 +449,7 @@
 								onClose : function () {
 									var div = $("#cheatmodTechLevels");
 									div.empty();
+									GameManager.resume(true);
 								}
 						})
 					}
