@@ -889,9 +889,44 @@
 				.each(function(i, e) {
 					e.textContent = Math.round(percentages[i]) + "%";
 				});			
+			
+			UI.selectedFeatures.forEach(function(cat, i) {
+					var h = $(".featureSelectionCategoryHeading[mission-id=\"" + cat.id + "\"]");
+					
+					var v = Math.round(UI._getSelectedFeatures()
+						.filter(function(f) {return f.category === cat.id})
+						.sum(function(f) {return f.v}));
+					
+					var gameSize = GameManager.company.currentGame.gameSize;
+					var maxV = roundTwoDecs(percentages[i]/(5 * ("aaa" == gameSize ? 0.4 : "large" == gameSize ? 0.7 : 1)));
+					
+					if ($("#cheatFeatureStats_"+i).length == 0) {
+						$("<div id=\"cheatFeatureStats_"+i+"\"></div>").insertAfter($(h));
+					}
+					
+					$("#cheatFeatureStats_"+i).text("D:{0} T:{1} V:{2}/{3}".format(cat.designFactor, 
+						cat.technologyFactor, v, maxV));
+				});
 		}
 	}
 	UI._updateFeatureFocusPreview = new_updateFeatureFocusPreview;
+	
+	function roundTwoDecs(n) {
+		return Math.round(n*100)/100;
+	}
+	
+	var old_generateFeatureElement = UI.generateFeatureElement;
+	var new_generateFeatureElement = function(feature,category) {
+		feature.isSkillTraining = true;
+		var e = old_generateFeatureElement(feature,category);
+		var c = UI.selectedFeatures.first(function(c) {
+			return c.id == category;
+		});
+		
+		e.append($('<div style="font-size:12pt;"><span>V: </span>{0}</div>'.format(feature.v)));
+		return e;
+	}
+	UI.generateFeatureElement = new_generateFeatureElement;
 	
 	var setShowAllHintsEnabled = function(){
 		if(settings.showAllHints){
