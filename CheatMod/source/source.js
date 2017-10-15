@@ -62,7 +62,7 @@
                     dF: 2,
                     tF: 2,
                     speedF: 2,
-                    qualityF: 1,
+                    qualityF: 2,
                     experience: LevelCalculator.getXpForLevel(10),
                     researchF: 2,
                     salary: 1,
