@@ -5,5 +5,8 @@
 	"author":"kristof1104",
 	"url":"https://github.com/kristof1104/CheatMod",
 	"description" : "A Mod for Game Dev Tycoon which provides users all kind of cheats.",
-	"main" : "./CheatMod.js"
+	"main" : "./CheatMod.js",
+	"dependencies": {
+		"gdt-modAPI":"0.1.x"
+	}
 }

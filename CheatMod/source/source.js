@@ -9,18 +9,20 @@
 	};
 	
 	GDT.on(GDT.eventKeys.saves.loaded, function() {
-		var dataStore = GDT.getDataStore("CheatModKristof1104");
-	
-		if (dataStore.data) {
-			var saved = dataStore.data;
-			if (saved.new_date) settings.new_date = saved.new_date;
-			if (saved.perfectScores) settings.perfectScores = saved.perfectScores;
-			if (saved.noBugsMode) settings.noBugsMode = saved.noBugsMode;
-			if (saved.fastResearch) settings.fastResearch = saved.fastResearch;
-			if (saved.showAllHints) settings.showAllHints = saved.showAllHints;
-		}
+		if (GDT.getDataStore) {
+			var dataStore = GDT.getDataStore("CheatModKristof1104");
 		
-		dataStore.data = settings;
+			if (dataStore.data) {
+				var saved = dataStore.data;
+				if (saved.new_date) settings.new_date = saved.new_date;
+				if (saved.perfectScores) settings.perfectScores = saved.perfectScores;
+				if (saved.noBugsMode) settings.noBugsMode = saved.noBugsMode;
+				if (saved.fastResearch) settings.fastResearch = saved.fastResearch;
+				if (saved.showAllHints) settings.showAllHints = saved.showAllHints;
+			}
+			
+			dataStore.data = settings;
+		}
 	});
 	
 	var oldSetupNewGame = GameManager._setupNewGame;
